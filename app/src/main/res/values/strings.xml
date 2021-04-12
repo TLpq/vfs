@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">vfs</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+
+    <string name="add_con">添加VFS</string>
+    <string name="con_agreement">VFS协议：</string>
+    <string name="con_agreement_smb">SMB</string>
+    <string name="con_ip_text">I  P：</string>
+    <string name="con_ip_text_hint">请输入IP</string>
+    <string name="con_user_text">用户名：</string>
+    <string name="con_user_text_hint">请输入用户名</string>
+    <string name="con_paw_text">密  码：</string>
+    <string name="con_paw_text_hint">请输入密码</string>
+    <string name="con_path_text">路  径：</string>
+    <string name="con_path_text_hint">请输入路径</string>
+    <string name="con_certain">确定</string>
+    <string name="con_cancel">取消</string>
+
+    <string name="ip_not_null">IP不能为空</string>
+    <string name="user_not_null">用户名不能为空</string>
+    <string name="paw_not_null">密码不能为空</string>
+    <string name="path_not_null">路径不能为空</string>
+</resources>
