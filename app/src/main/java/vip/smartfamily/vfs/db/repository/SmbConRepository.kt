@@ -1,8 +1,6 @@
 package vip.smartfamily.vfs.db.repository
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import vip.smartfamily.vfs.db.AppDatabase
 import vip.smartfamily.vfs.db.dao.SmbConDao
 import vip.smartfamily.vfs.db.entity.SmbConInfo
@@ -27,6 +25,23 @@ class SmbConRepository private constructor(private val smbConDao: SmbConDao) {
             job.join()
         }
         return b
+    }
+
+    fun upData(smbConInfo: SmbConInfo) {
+        CoroutineScope(Dispatchers.IO).launch {
+            smbConDao.upData(smbConInfo)
+        }
+    }
+
+    fun getData(ip: String, path: String): SmbConInfo? {
+        var smbConInfo: SmbConInfo?
+        runBlocking {
+            smbConInfo = withContext(Dispatchers.IO) {
+                smbConInfo = smbConDao.getData(ip, path)
+                smbConInfo
+            }
+        }
+        return smbConInfo
     }
 
     fun gatAllConList(): ArrayList<SmbConInfo> {

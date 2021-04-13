@@ -20,6 +20,9 @@ interface SmbConDao {
     @Query("SELECT * FROM connection_info WHERE guid=:guid")
     fun getData(guid: String): SmbConInfo?
 
+    @Query("SELECT * FROM connection_info WHERE ip=:ip AND path=:path")
+    fun getData(ip: String, path: String): SmbConInfo
+
     @Query("DELETE FROM connection_info WHERE guid=:guid")
     fun delete(guid: String)
 

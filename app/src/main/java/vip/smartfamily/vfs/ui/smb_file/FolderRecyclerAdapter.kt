@@ -1,12 +1,17 @@
 package vip.smartfamily.vfs.ui.smb_file
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.hierynomus.smbj.SMBClient
 import com.hierynomus.smbj.auth.AuthenticationContext
 import com.hierynomus.smbj.share.DiskShare
@@ -16,6 +21,7 @@ import vip.smartfamily.vfs.R
 import vip.smartfamily.vfs.data.smb.SmbFileInfo
 import vip.smartfamily.vfs.data.smb.SmbFileTree
 import vip.smartfamily.vfs.db.entity.SmbConInfo
+import vip.smartfamily.vfs.db.repository.SmbConRepository
 import vip.smartfamily.vfs.ui.smb_file.fragment.inter.TopClickListener
 
 class FolderRecyclerAdapter(
@@ -68,20 +74,97 @@ class FolderRecyclerAdapter(
                             }
                         }
 
-                        withContext(Dispatchers.Main){
+                        withContext(Dispatchers.Main) {
                             iconView.setOnClickListener {
                                 topClickListener.onClickDisk(smbFileInfo.diskShare!!, smbFileInfo.fileTrees!!)
                             }
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        statusView.setBackgroundResource(R.drawable.ic_folder_status_false)
+                        withContext(Dispatchers.Main) {
+                            statusView.setBackgroundResource(R.drawable.ic_folder_status_false)
+                        }
                     }
                 }
             }
 
+            detailsView.visibility = View.VISIBLE
             detailsView.setOnClickListener {
                 Log.e("点击", "点击详情$position")
+                val smbConInfo = SmbConRepository.getInstance().getData(smbFileInfo.smbConInfo.ip, smbFileInfo.smbConInfo.path)
+                smbConInfo?.let { smbInfo ->
+                    val layoutInflater = LayoutInflater.from(itemView.context)
+                    val addConView = layoutInflater.inflate(R.layout.dialog_add_con, null)
+                    val dialogBuilder = AlertDialog.Builder(itemView.context)
+                    dialogBuilder.setView(addConView)
+                    val dialog = dialogBuilder.create()
+                    dialog.setCancelable(false)
+                    // 背景透明
+                    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    dialog.show()
+
+                    val ipEditText = addConView.findViewById<TextInputEditText>(R.id.tiet_dia_ip)
+                    ipEditText.setText(smbInfo.ip)
+                    val ipTextLayout = addConView.findViewById<TextInputLayout>(R.id.til_dia_ip)
+
+                    val userEditText = addConView.findViewById<TextInputEditText>(R.id.tiet_dia_user)
+                    userEditText.setText(smbInfo.user)
+                    val userTextLayout = addConView.findViewById<TextInputLayout>(R.id.til_dia_user)
+
+                    val pawEditText = addConView.findViewById<TextInputEditText>(R.id.tiet_dia_paw)
+                    pawEditText.setText(smbInfo.paw)
+                    val pawTextLayout = addConView.findViewById<TextInputLayout>(R.id.til_dia_paw)
+
+                    val pathEditText = addConView.findViewById<TextInputEditText>(R.id.tiet_dia_path)
+                    pathEditText.setText(smbInfo.path)
+                    val pathTextLayout = addConView.findViewById<TextInputLayout>(R.id.til_dia_path)
+
+                    val certainButton = addConView.findViewById<TextView>(R.id.tv_dia_certain)
+                    certainButton.setOnClickListener {
+                        certainButton.isEnabled = false
+                        var b = true
+                        if (ipEditText.text.toString().isEmpty()) {
+                            ipTextLayout.error = itemView.context.resources.getString(R.string.ip_not_null)
+                            b = false
+                        } else {
+                            ipTextLayout.error = null
+                        }
+
+                        if (userEditText.text.toString().isEmpty()) {
+                            userTextLayout.error = itemView.context.resources.getString(R.string.user_not_null)
+                            b = false
+                        } else {
+                            userTextLayout.error = null
+                        }
+
+                        if (pawEditText.text.toString().isEmpty()) {
+                            pawTextLayout.error = itemView.context.resources.getString(R.string.paw_not_null)
+                            b = false
+                        } else {
+                            pawTextLayout.error = null
+                        }
+
+                        if (pathEditText.text.toString().isEmpty()) {
+                            pathTextLayout.error = itemView.context.resources.getString(R.string.path_not_null)
+                            b = false
+                        } else {
+                            pathTextLayout.error = null
+                        }
+                        if (b) {
+                            smbInfo.path = pathEditText.text.toString()
+                            smbInfo.ip = ipEditText.text.toString()
+                            smbInfo.user = userEditText.text.toString()
+                            smbInfo.paw = pawEditText.text.toString()
+                            smbInfo.path = pathEditText.text.toString()
+                            SmbConRepository.getInstance().upData(smbInfo)
+                            dialog.dismiss()
+                        }
+                    }
+
+                    addConView.findViewById<TextView>(R.id.tv_dia_cancel).setOnClickListener {
+                        dialog.dismiss()
+                    }
+                }
             }
         }
     }
