@@ -1,5 +1,6 @@
 package vip.smartfamily.vfs.ui.smb_file.fragment
 
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -95,16 +96,22 @@ class SmbFileRecycAdapter(
                                 iconView.setImageResource(R.drawable.ic_file_image)
                                 iconView.setOnClickListener {
                                     GlobalScope.launch {
-                                        try {
-                                            val file = diskShare.openFile(
-                                                    path,
-                                                    HashSet(listOf(AccessMask.GENERIC_ALL)),
-                                                    HashSet(listOf(FileAttributes.FILE_ATTRIBUTE_NORMAL)),
-                                                    SMB2ShareAccess.ALL,
-                                                    SMB2CreateDisposition.FILE_OPEN,
-                                                    HashSet(listOf(SMB2CreateOptions.FILE_NON_DIRECTORY_FILE)))
-                                        } catch (e: Exception) {
-                                            e.printStackTrace()
+                                        withContext(Dispatchers.IO){
+                                            try {
+                                                val file = diskShare.openFile(
+                                                        path,
+                                                        HashSet(listOf(AccessMask.GENERIC_ALL)),
+                                                        HashSet(listOf(FileAttributes.FILE_ATTRIBUTE_NORMAL)),
+                                                        SMB2ShareAccess.ALL,
+                                                        SMB2CreateDisposition.FILE_OPEN,
+                                                        HashSet(listOf(SMB2CreateOptions.FILE_NON_DIRECTORY_FILE)))
+
+                                                val bitmap = BitmapFactory.decodeStream(file.inputStream)
+                                                // 图片处理
+                                                bitmap.recycle()
+                                            } catch (e: Exception) {
+                                                e.printStackTrace()
+                                            }
                                         }
                                     }
                                 }

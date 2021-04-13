@@ -42,7 +42,7 @@ class SmbFileActivity : AppCompatActivity(), TopClickListener {
     private lateinit var drawerLayout: DrawerLayout
 
     /**
-     *
+     * 头像
      */
     private lateinit var handView: CircleImageView
 
