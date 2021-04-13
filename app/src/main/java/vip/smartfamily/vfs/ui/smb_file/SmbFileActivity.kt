@@ -148,7 +148,7 @@ class SmbFileActivity : AppCompatActivity(), TopClickListener {
                 }
                 if (b) {
                     val smbClient = SMBClient()
-                    AppExecutors.getInstance().networkIO().execute {
+                    AppExecutors.instance.networkIO().execute {
                         try {
                             // 连接SMB服务
                             val connection = smbClient.connect(ipEditText.text.toString())
