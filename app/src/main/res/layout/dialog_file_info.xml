@@ -7,14 +7,77 @@
     app:cardCornerRadius="@dimen/dp_8">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/dp_360"
+        android:layout_height="wrap_content"
         android:background="#FFFFFF">
 
-        <View
-            android:layout_width="@dimen/dp_360"
-            android:layout_height="@dimen/dp_500"
+        <TextView
+            android:id="@+id/tv_dia_file_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_14"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="新建文件夹" />
+
+        <TextView
+            android:id="@+id/tv_dia_file_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_10"
+            app:layout_constraintStart_toStartOf="@id/tv_dia_file_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_dia_file_name"
+            tools:text="2021-06-09 12:21:20" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_0_1"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_dia_file_date" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_dia_file_download"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_100"
+            android:layout_marginTop="@dimen/dp_24"
+            android:background="@drawable/ic_file_info_back"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/dp_24"
+            app:layout_constraintEnd_toStartOf="@id/cl_dia_file_look"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_dia_file_date">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_dia_file_look"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_100"
+            android:background="@drawable/ic_file_info_back"
+            app:layout_constraintEnd_toStartOf="@id/cl_dia_file_rename"
+            app:layout_constraintStart_toEndOf="@id/cl_dia_file_download"
+            app:layout_constraintTop_toTopOf="@id/cl_dia_file_download">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_dia_file_rename"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_100"
+            android:background="@drawable/ic_file_info_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/cl_dia_file_look"
+            app:layout_constraintTop_toTopOf="@id/cl_dia_file_download">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
