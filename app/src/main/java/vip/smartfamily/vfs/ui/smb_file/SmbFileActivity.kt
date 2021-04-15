@@ -102,9 +102,6 @@ class SmbFileActivity : AppCompatActivity(), TopClickListener {
             dialogBuilder.setView(addConView)
             val dialog = dialogBuilder.create()
             dialog.setCancelable(false)
-            val set = AnimatorInflater.loadAnimator(dialog.context, R.animator.push_down_in) as AnimatorSet
-            set.setTarget(addConView)
-            set.start()
             // 背景透明
             dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.show()
