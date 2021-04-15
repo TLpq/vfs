@@ -1,8 +1,10 @@
 package vip.smartfamily.vfs.ui.smb_file
 
+import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -91,7 +93,26 @@ class FolderRecyclerAdapter(
             detailsView.visibility = View.VISIBLE
             detailsView.setOnClickListener {
                 Log.e("点击", "点击详情$position")
-                val smbConInfo = SmbConRepository.getInstance().getData(smbFileInfo.smbConInfo.ip, smbFileInfo.smbConInfo.path)
+                val addConView = LayoutInflater.from(itemView.context).inflate(R.layout.dialog_file_info, null)
+                val dialog = Dialog(itemView.context, R.style.style_dialog)
+                dialog.setContentView(addConView)
+                dialog.window?.setGravity(Gravity.BOTTOM)
+                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                dialog.window?.setWindowAnimations(R.style.dialog_animation)
+                dialog.show()
+                //val att = dialog.window?.attributes
+                //att?.x = 0
+                //att?.y = 0
+                //att?.width = itemView.context.resources.getDimension(R.dimen.dp_360).toInt()
+                //att?.height = itemView.context.resources.getDimension(R.dimen.dp_360).toInt()
+                //dialog.window?.attributes = att
+
+                //val layoutParams = addConView.layoutParams
+                //layoutParams.height = itemView.context.resources.getDimension(R.dimen.dp_1).toInt()
+                //layoutParams.width = itemView.context.resources.getDimension(R.dimen.dp_1).toInt()
+                //addConView.layoutParams = layoutParams
+
+                /*val smbConInfo = SmbConRepository.getInstance().getData(smbFileInfo.smbConInfo.ip, smbFileInfo.smbConInfo.path)
                 smbConInfo?.let { smbInfo ->
                     val layoutInflater = LayoutInflater.from(itemView.context)
                     val addConView = layoutInflater.inflate(R.layout.dialog_add_con, null)
@@ -164,7 +185,7 @@ class FolderRecyclerAdapter(
                     addConView.findViewById<TextView>(R.id.tv_dia_cancel).setOnClickListener {
                         dialog.dismiss()
                     }
-                }
+                }*/
             }
         }
     }

@@ -1,5 +1,7 @@
 package vip.smartfamily.vfs.ui.smb_file
 
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.media.audiofx.BassBoost
@@ -8,6 +10,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.AnimationSet
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -99,6 +102,9 @@ class SmbFileActivity : AppCompatActivity(), TopClickListener {
             dialogBuilder.setView(addConView)
             val dialog = dialogBuilder.create()
             dialog.setCancelable(false)
+            val set = AnimatorInflater.loadAnimator(dialog.context, R.animator.push_down_in) as AnimatorSet
+            set.setTarget(addConView)
+            set.start()
             // 背景透明
             dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.show()
