@@ -1,10 +1,8 @@
 package vip.smartfamily.vfs.ui.smb_file
 
-import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +15,6 @@ import com.google.android.material.textfield.TextInputLayout
 import com.hierynomus.smbj.SMBClient
 import com.hierynomus.smbj.auth.AuthenticationContext
 import com.hierynomus.smbj.share.DiskShare
-import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.*
 import vip.smartfamily.vfs.R
 import vip.smartfamily.vfs.data.smb.SmbFileInfo
@@ -25,6 +22,7 @@ import vip.smartfamily.vfs.data.smb.SmbFileTree
 import vip.smartfamily.vfs.db.entity.SmbConInfo
 import vip.smartfamily.vfs.db.repository.SmbConRepository
 import vip.smartfamily.vfs.ui.smb_file.fragment.inter.TopClickListener
+import vip.smartfamily.vfs.ui.smb_file.my_view.DialogFileChoice
 
 class FolderRecyclerAdapter(
         folderList: List<SmbConInfo>,
@@ -92,9 +90,130 @@ class FolderRecyclerAdapter(
 
             detailsView.visibility = View.VISIBLE
             detailsView.setOnClickListener {
-                Log.e("点击", "点击详情$position")
-                val addConView = LayoutInflater.from(itemView.context).inflate(R.layout.dialog_file_info, null)
+                val dialogFileChoice = object : DialogFileChoice(itemView.context, VFS_DISK) {
+                    override fun getName() = smbFileInfo.smbConInfo.name
+
+                    override fun setMsg(textView: TextView) {
+                        GlobalScope.launch(Dispatchers.IO) {
+                            smbFileInfo.diskShare?.shareInformation?.let {
+                                var total = it.totalSpace
+                                var totalUnit = "B"
+                                var free = it.callerFreeSpace
+                                var freeUnit = "B"
+
+                                asd@ while (total >= 1024) {
+                                    total /= 1024
+                                    when (totalUnit) {
+                                        "B" -> {
+                                            totalUnit = "KB"
+                                        }
+                                        "KB" -> {
+                                            totalUnit = "MB"
+                                        }
+                                        "MB" -> {
+                                            totalUnit = "GB"
+                                        }
+                                        "GB" -> {
+                                            totalUnit = "TB"
+                                            break@asd
+                                        }
+                                    }
+                                }
+
+                                asd@ while (free >= 1024) {
+                                    free /= 1024
+                                    when (freeUnit) {
+                                        "B" -> {
+                                            freeUnit = "KB"
+                                        }
+                                        "KB" -> {
+                                            freeUnit = "MB"
+                                        }
+                                        "MB" -> {
+                                            freeUnit = "GB"
+                                        }
+                                        "GB" -> {
+                                            freeUnit = "TB"
+                                            break@asd
+                                        }
+                                    }
+                                }
+                                withContext(Dispatchers.Main) {
+                                    textView.text = "$free $freeUnit 可用，共 $total $totalUnit"
+                                }
+                            }
+                        }
+                    }
+                }
+                dialogFileChoice.show()
+/*
                 val dialog = Dialog(itemView.context, R.style.style_dialog)
+
+                val addConView = LayoutInflater.from(itemView.context).inflate(R.layout.dialog_file_info, null).apply {
+                    findViewById<TextView>(R.id.tv_dia_file_name).text = smbFileInfo.smbConInfo.name
+
+                    findViewById<ConstraintLayout>(R.id.cl_dia_file_recon).setOnClickListener {
+                        dialog.dismiss()
+                        initReconDialog(itemView.context, smbFileInfo)
+                    }
+
+                    findViewById<ConstraintLayout>(R.id.cl_dia_file_rename).setOnClickListener { }
+
+                    findViewById<ConstraintLayout>(R.id.cl_dia_file_download).setOnClickListener { }
+
+                    GlobalScope.launch(Dispatchers.IO) {
+                        smbFileInfo.diskShare?.shareInformation?.let {
+                            var total = it.totalSpace
+                            var totalUnit = "B"
+                            var free = it.callerFreeSpace
+                            var freeUnit = "B"
+
+                            asd@ while (total >= 1024) {
+                                total /= 1024
+                                when (totalUnit) {
+                                    "B" -> {
+                                        totalUnit = "KB"
+                                    }
+                                    "KB" -> {
+                                        totalUnit = "MB"
+                                    }
+                                    "MB" -> {
+                                        totalUnit = "GB"
+                                    }
+                                    "GB" -> {
+                                        totalUnit = "TB"
+                                        break@asd
+                                    }
+                                }
+                            }
+
+                            asd@ while (free >= 1024) {
+                                free /= 1024
+                                when (freeUnit) {
+                                    "B" -> {
+                                        freeUnit = "KB"
+                                    }
+                                    "KB" -> {
+                                        freeUnit = "MB"
+                                    }
+                                    "MB" -> {
+                                        freeUnit = "GB"
+                                    }
+                                    "GB" -> {
+                                        freeUnit = "TB"
+                                        break@asd
+                                    }
+                                }
+                            }
+
+                            withContext(Dispatchers.Main) {
+                                findViewById<TextView>(R.id.tv_dia_file_date).text =
+                                        "$free $freeUnit 可用，共 $total $totalUnit"
+                            }
+                        }
+                    }
+                }
+
                 dialog.setContentView(addConView)
                 dialog.window?.setGravity(Gravity.BOTTOM)
                 dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -111,81 +230,7 @@ class FolderRecyclerAdapter(
                 //layoutParams.height = itemView.context.resources.getDimension(R.dimen.dp_1).toInt()
                 //layoutParams.width = itemView.context.resources.getDimension(R.dimen.dp_1).toInt()
                 //addConView.layoutParams = layoutParams
-
-                /*val smbConInfo = SmbConRepository.getInstance().getData(smbFileInfo.smbConInfo.ip, smbFileInfo.smbConInfo.path)
-                smbConInfo?.let { smbInfo ->
-                    val layoutInflater = LayoutInflater.from(itemView.context)
-                    val addConView = layoutInflater.inflate(R.layout.dialog_add_con, null)
-                    val dialogBuilder = AlertDialog.Builder(itemView.context)
-                    dialogBuilder.setView(addConView)
-                    val dialog = dialogBuilder.create()
-                    dialog.setCancelable(false)
-                    // 背景透明
-                    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                    dialog.show()
-
-                    val ipEditText = addConView.findViewById<TextInputEditText>(R.id.tiet_dia_ip)
-                    ipEditText.setText(smbInfo.ip)
-                    val ipTextLayout = addConView.findViewById<TextInputLayout>(R.id.til_dia_ip)
-
-                    val userEditText = addConView.findViewById<TextInputEditText>(R.id.tiet_dia_user)
-                    userEditText.setText(smbInfo.user)
-                    val userTextLayout = addConView.findViewById<TextInputLayout>(R.id.til_dia_user)
-
-                    val pawEditText = addConView.findViewById<TextInputEditText>(R.id.tiet_dia_paw)
-                    pawEditText.setText(smbInfo.paw)
-                    val pawTextLayout = addConView.findViewById<TextInputLayout>(R.id.til_dia_paw)
-
-                    val pathEditText = addConView.findViewById<TextInputEditText>(R.id.tiet_dia_path)
-                    pathEditText.setText(smbInfo.path)
-                    val pathTextLayout = addConView.findViewById<TextInputLayout>(R.id.til_dia_path)
-
-                    val certainButton = addConView.findViewById<TextView>(R.id.tv_dia_certain)
-                    certainButton.setOnClickListener {
-                        certainButton.isEnabled = false
-                        var b = true
-                        if (ipEditText.text.toString().isEmpty()) {
-                            ipTextLayout.error = itemView.context.resources.getString(R.string.ip_not_null)
-                            b = false
-                        } else {
-                            ipTextLayout.error = null
-                        }
-
-                        if (userEditText.text.toString().isEmpty()) {
-                            userTextLayout.error = itemView.context.resources.getString(R.string.user_not_null)
-                            b = false
-                        } else {
-                            userTextLayout.error = null
-                        }
-
-                        if (pawEditText.text.toString().isEmpty()) {
-                            pawTextLayout.error = itemView.context.resources.getString(R.string.paw_not_null)
-                            b = false
-                        } else {
-                            pawTextLayout.error = null
-                        }
-
-                        if (pathEditText.text.toString().isEmpty()) {
-                            pathTextLayout.error = itemView.context.resources.getString(R.string.path_not_null)
-                            b = false
-                        } else {
-                            pathTextLayout.error = null
-                        }
-                        if (b) {
-                            smbInfo.path = pathEditText.text.toString()
-                            smbInfo.ip = ipEditText.text.toString()
-                            smbInfo.user = userEditText.text.toString()
-                            smbInfo.paw = pawEditText.text.toString()
-                            smbInfo.path = pathEditText.text.toString()
-                            SmbConRepository.getInstance().upData(smbInfo)
-                            dialog.dismiss()
-                        }
-                    }
-
-                    addConView.findViewById<TextView>(R.id.tv_dia_cancel).setOnClickListener {
-                        dialog.dismiss()
-                    }
-                }*/
+*/
             }
         }
     }
@@ -204,6 +249,87 @@ class FolderRecyclerAdapter(
         } catch (e: Exception) {
         }
         notifyDataSetChanged()
+    }
+
+    /**
+     * 修改连接
+     * [smbFileInfo] smb文件信息
+     */
+    private fun initReconDialog(context: Context, smbFileInfo: SmbFileInfo) {
+        val smbConInfo = SmbConRepository.getInstance().getData(smbFileInfo.smbConInfo.ip, smbFileInfo.smbConInfo.path)
+        smbConInfo?.let { smbInfo ->
+            val layoutInflater = LayoutInflater.from(context)
+            val reconView = layoutInflater.inflate(R.layout.dialog_add_con, null)
+            val dialogBuilder = AlertDialog.Builder(context)
+            dialogBuilder.setView(reconView)
+            val reconDialog = dialogBuilder.create()
+            reconDialog.setCancelable(false)
+            // 背景透明
+            reconDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            reconDialog.show()
+
+            val ipEditText = reconView.findViewById<TextInputEditText>(R.id.tiet_dia_ip)
+            ipEditText.setText(smbInfo.ip)
+            val ipTextLayout = reconView.findViewById<TextInputLayout>(R.id.til_dia_ip)
+
+            val userEditText = reconView.findViewById<TextInputEditText>(R.id.tiet_dia_user)
+            userEditText.setText(smbInfo.user)
+            val userTextLayout = reconView.findViewById<TextInputLayout>(R.id.til_dia_user)
+
+            val pawEditText = reconView.findViewById<TextInputEditText>(R.id.tiet_dia_paw)
+            pawEditText.setText(smbInfo.paw)
+            val pawTextLayout = reconView.findViewById<TextInputLayout>(R.id.til_dia_paw)
+
+            val pathEditText = reconView.findViewById<TextInputEditText>(R.id.tiet_dia_path)
+            pathEditText.setText(smbInfo.path)
+            val pathTextLayout = reconView.findViewById<TextInputLayout>(R.id.til_dia_path)
+
+            val certainButton = reconView.findViewById<TextView>(R.id.tv_dia_certain)
+            certainButton.setOnClickListener {
+                certainButton.isEnabled = false
+                var b = true
+                if (ipEditText.text.toString().isEmpty()) {
+                    ipTextLayout.error = context.resources.getString(R.string.ip_not_null)
+                    b = false
+                } else {
+                    ipTextLayout.error = null
+                }
+
+                if (userEditText.text.toString().isEmpty()) {
+                    userTextLayout.error = context.resources.getString(R.string.user_not_null)
+                    b = false
+                } else {
+                    userTextLayout.error = null
+                }
+
+                if (pawEditText.text.toString().isEmpty()) {
+                    pawTextLayout.error = context.resources.getString(R.string.paw_not_null)
+                    b = false
+                } else {
+                    pawTextLayout.error = null
+                }
+
+                if (pathEditText.text.toString().isEmpty()) {
+                    pathTextLayout.error = context.resources.getString(R.string.path_not_null)
+                    b = false
+                } else {
+                    pathTextLayout.error = null
+                }
+                if (b) {
+                    smbInfo.path = pathEditText.text.toString()
+                    smbInfo.ip = ipEditText.text.toString()
+                    smbInfo.user = userEditText.text.toString()
+                    smbInfo.paw = pawEditText.text.toString()
+                    smbInfo.path = pathEditText.text.toString()
+                    SmbConRepository.getInstance().upData(smbInfo)
+                    reconDialog.dismiss()
+                }
+            }
+
+            reconView.findViewById<TextView>(R.id.tv_dia_cancel).setOnClickListener {
+                reconDialog.dismiss()
+            }
+        }
     }
 }
 

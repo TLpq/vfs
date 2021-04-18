@@ -1,16 +1,12 @@
 package vip.smartfamily.vfs.ui.smb_file
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.media.audiofx.BassBoost
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.animation.AnimationSet
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -35,7 +31,6 @@ import vip.smartfamily.vfs.ui.smb_file.fragment.SmbConListFragment
 import vip.smartfamily.vfs.ui.smb_file.fragment.SmbFileListFragment
 import vip.smartfamily.vfs.ui.smb_file.fragment.ViewPagerFragmentStateAdapter
 import vip.smartfamily.vfs.ui.smb_file.fragment.inter.TopClickListener
-import kotlin.math.log
 
 class SmbFileActivity : AppCompatActivity(), TopClickListener {
     /**
@@ -242,5 +237,27 @@ class SmbFileActivity : AppCompatActivity(), TopClickListener {
         }
 
         toast?.show()
+    }
+
+    private fun dff() {
+        when {
+            checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED -> {
+                // You can use the API that requires the permission.
+            }
+
+            shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE) -> {
+                // In an educational UI, explain to the user why your app requires this
+                // permission for a specific feature to behave as expected. In this UI,
+                // include a "cancel" or "no thanks" button that allows the user to
+                // continue using your app without granting the permission.
+            }
+
+            else -> {
+                // You can directly ask for the permission.
+                // The registered ActivityResultCallback gets the result of this request.
+                val ss = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                requestPermissions(ss, 107)
+            }
+        }
     }
 }

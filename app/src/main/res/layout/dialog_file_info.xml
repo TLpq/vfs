@@ -49,35 +49,65 @@
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_100"
             android:layout_marginTop="@dimen/dp_24"
-            android:background="@drawable/ic_file_info_back"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="@dimen/dp_24"
-            app:layout_constraintEnd_toStartOf="@id/cl_dia_file_look"
+            android:background="@drawable/ic_vfs_download"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/cl_dia_file_recon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_dia_file_date">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_15"
+                android:text="@string/dialog_download"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_dia_file_look"
+            android:id="@+id/cl_dia_file_recon"
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_100"
-            android:background="@drawable/ic_file_info_back"
+            android:background="@drawable/ic_vfs_recon"
             app:layout_constraintEnd_toStartOf="@id/cl_dia_file_rename"
             app:layout_constraintStart_toEndOf="@id/cl_dia_file_download"
             app:layout_constraintTop_toTopOf="@id/cl_dia_file_download">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_15"
+                android:text="@string/dialog_recon"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_dia_file_rename"
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_100"
-            android:background="@drawable/ic_file_info_back"
+            android:background="@drawable/ic_vfs_rename"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/cl_dia_file_look"
+            app:layout_constraintStart_toEndOf="@id/cl_dia_file_recon"
             app:layout_constraintTop_toTopOf="@id/cl_dia_file_download">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_15"
+                android:text="@string/dialog_rename"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

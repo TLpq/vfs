@@ -1,9 +1,15 @@
 package vip.smartfamily.vfs.ui.smb_file.fragment
 
+import android.app.Dialog
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.hierynomus.msdtyp.AccessMask
 import com.hierynomus.msfscc.FileAttributes
@@ -12,12 +18,12 @@ import com.hierynomus.mssmb2.SMB2CreateOptions
 import com.hierynomus.mssmb2.SMB2ShareAccess
 import com.hierynomus.smbj.share.Directory
 import com.hierynomus.smbj.share.DiskShare
-import com.hierynomus.smbj.share.File
 import kotlinx.coroutines.*
 import vip.smartfamily.vfs.R
 import vip.smartfamily.vfs.data.smb.SmbFileTree
 import vip.smartfamily.vfs.ui.smb_file.FolderViewHolder
 import vip.smartfamily.vfs.ui.smb_file.fragment.inter.TopClickListener
+import java.text.SimpleDateFormat
 import java.util.*
 
 class SmbFileRecycAdapter(
@@ -25,6 +31,9 @@ class SmbFileRecycAdapter(
         private val smbFileInfoList: ArrayList<SmbFileTree>,
         private val topClickListener: TopClickListener
 ) : RecyclerView.Adapter<FolderViewHolder>() {
+
+    private final val fileDateModel = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FolderViewHolder {
         val folderView = LayoutInflater.from(parent.context).inflate(
                 R.layout.item_file_list,
@@ -96,7 +105,7 @@ class SmbFileRecycAdapter(
                                 iconView.setImageResource(R.drawable.ic_file_image)
                                 iconView.setOnClickListener {
                                     GlobalScope.launch {
-                                        withContext(Dispatchers.IO){
+                                        withContext(Dispatchers.IO) {
                                             try {
                                                 val file = diskShare.openFile(
                                                         path,
@@ -129,6 +138,29 @@ class SmbFileRecycAdapter(
                     } else {
                         iconView.setImageResource(R.drawable.ic_file_unknown)
                     }
+                }
+
+                iconView.setOnLongClickListener {
+                    val addConView = LayoutInflater.from(itemView.context).inflate(R.layout.dialog_file_info, null).apply {
+                        findViewById<TextView>(R.id.tv_dia_file_name).text = smbFileTree.fileInfo.fileName
+                        findViewById<TextView>(R.id.tv_dia_file_date).text =
+                                fileDateModel.format(smbFileTree.fileInfo.changeTime.toDate())
+
+                        findViewById<ConstraintLayout>(R.id.cl_dia_file_download).setOnClickListener { }
+
+                        findViewById<ConstraintLayout>(R.id.cl_dia_file_rename).setOnClickListener { }
+
+                        findViewById<ConstraintLayout>(R.id.cl_dia_file_recon).setOnClickListener { }
+
+                    }
+                    val dialog = Dialog(itemView.context, R.style.style_dialog)
+                    dialog.setContentView(addConView)
+                    dialog.window?.setGravity(Gravity.BOTTOM)
+                    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    dialog.window?.setWindowAnimations(R.style.dialog_animation)
+                    dialog.show()
+
+                    true
                 }
             }
         }
