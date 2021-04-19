@@ -9,7 +9,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="@dimen/dp_300"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/dp_10"
+        app:cardCornerRadius="@dimen/dp_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

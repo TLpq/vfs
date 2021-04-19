@@ -196,6 +196,8 @@ class SmbFileActivity : AppCompatActivity(), TopClickListener {
                 dialog.dismiss()
             }
         }
+
+        dff()
     }
 
 
@@ -239,7 +241,14 @@ class SmbFileActivity : AppCompatActivity(), TopClickListener {
         toast?.show()
     }
 
+    /**
+     * 申请权限
+     */
     private fun dff() {
+        val permissions = arrayOf(
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
         when {
             checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED -> {
                 // You can use the API that requires the permission.
@@ -250,13 +259,23 @@ class SmbFileActivity : AppCompatActivity(), TopClickListener {
                 // permission for a specific feature to behave as expected. In this UI,
                 // include a "cancel" or "no thanks" button that allows the user to
                 // continue using your app without granting the permission.
+                requestPermissions(permissions, 107)
             }
 
             else -> {
                 // You can directly ask for the permission.
                 // The registered ActivityResultCallback gets the result of this request.
-                val ss = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                requestPermissions(ss, 107)
+                //val ss = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                requestPermissions(permissions, 107)
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            107 ->{
+
             }
         }
     }
