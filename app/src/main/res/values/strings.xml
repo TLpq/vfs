@@ -30,6 +30,7 @@
     <string name="path_not_null">路径不能为空</string>
 
     <string name="dialog_download">下  载</string>
+    <string name="dialog_look">查  看</string>
     <string name="dialog_rename">重命名</string>
     <string name="dialog_recon">修改连接</string>
 </resources>

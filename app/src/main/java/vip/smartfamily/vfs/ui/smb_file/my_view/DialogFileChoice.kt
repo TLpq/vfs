@@ -2,7 +2,6 @@ package vip.smartfamily.vfs.ui.smb_file.my_view
 
 import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -18,6 +17,8 @@ import kotlinx.coroutines.withContext
 import vip.smartfamily.vfs.R
 import vip.smartfamily.vfs.data.smb.SmbFileInfo
 import vip.smartfamily.vfs.data.smb.SmbFileTree
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * 下载文件夹选择器
@@ -59,7 +60,7 @@ class DialogFileChoice : Dialog, View.OnClickListener {
                 smbFileInfo != null -> {
                     nameTextView.text = smbFileInfo!!.smbConInfo.name
                     GlobalScope.launch(Dispatchers.IO) {
-                        smbFileInfo!!.diskShare?.shareInformation?.let {
+                        smbFileInfo?.diskShare?.shareInformation?.let {
                             var total = it.totalSpace
                             var totalUnit = "B"
                             var free = it.callerFreeSpace
@@ -109,7 +110,15 @@ class DialogFileChoice : Dialog, View.OnClickListener {
                     }
                 }
                 smbFileTree != null -> {
-                    nameTextView.text = smbFileTree!!.fileInfo!!.fileName
+                    findViewById<TextView>(R.id.tv_dia_file_look).text = context.resources.getString(R.string.dialog_look)
+                    findViewById<ConstraintLayout>(R.id.cl_dia_file_download).apply {
+                        setBackgroundResource(R.drawable.ic_vfs_look)
+                    }
+                    smbFileTree?.fileInfo?.let {
+                        nameTextView.text = it.fileName
+                        val fileDateModel = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
+                        msgTextView.text = fileDateModel.format(it.changeTime.toDate())
+                    }
                 }
             }
 
