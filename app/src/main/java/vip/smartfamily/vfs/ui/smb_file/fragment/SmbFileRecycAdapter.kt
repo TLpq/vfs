@@ -23,6 +23,7 @@ import vip.smartfamily.vfs.R
 import vip.smartfamily.vfs.data.smb.SmbFileTree
 import vip.smartfamily.vfs.ui.smb_file.FolderViewHolder
 import vip.smartfamily.vfs.ui.smb_file.fragment.inter.TopClickListener
+import vip.smartfamily.vfs.ui.smb_file.my_view.DialogFileChoice
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -141,7 +142,10 @@ class SmbFileRecycAdapter(
                 }
 
                 iconView.setOnLongClickListener {
-                    val addConView = LayoutInflater.from(itemView.context).inflate(R.layout.dialog_file_info, null).apply {
+                    val dialogFileChoice = DialogFileChoice(itemView.context, DialogFileChoice.VFS_FILE, smbFileTree)
+                    dialogFileChoice.show()
+
+                    /*val addConView = LayoutInflater.from(itemView.context).inflate(R.layout.dialog_file_info, null).apply {
                         findViewById<TextView>(R.id.tv_dia_file_name).text = smbFileTree.fileInfo.fileName
                         findViewById<TextView>(R.id.tv_dia_file_date).text =
                                 fileDateModel.format(smbFileTree.fileInfo.changeTime.toDate())
@@ -158,7 +162,7 @@ class SmbFileRecycAdapter(
                     dialog.window?.setGravity(Gravity.BOTTOM)
                     dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                     dialog.window?.setWindowAnimations(R.style.dialog_animation)
-                    dialog.show()
+                    dialog.show()*/
 
                     true
                 }
