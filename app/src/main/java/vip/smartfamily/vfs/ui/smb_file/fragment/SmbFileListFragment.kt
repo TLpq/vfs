@@ -19,21 +19,30 @@ class SmbFileListFragment(
 ) : Fragment() {
     private var fragmentView: View? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        fragmentView?: synchronized(this){
-            fragmentView?:inflater.inflate(R.layout.fragment_file_list, container, false).also {
+        fragmentView ?: synchronized(this) {
+            fragmentView ?: inflater.inflate(R.layout.fragment_file_list, container, false).also {
                 fragmentView = it
-                initRecyclerView()
             }
         }
 
         return fragmentView
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        initRecyclerView()
+    }
+
     private fun initRecyclerView() {
         val recyclerView = fragmentView!!.findViewById<RecyclerView>(R.id.rv_fragment_file_list)
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL)
         recyclerView.layoutManager = staggeredGridLayoutManager
-        val smbFileListFragment = SmbFileRecycAdapter(diskShare, smbFileInfoList, topClickListener)
+        val smbFileListFragment = SmbFileRecycAdapter(activity, diskShare, smbFileInfoList, topClickListener)
         recyclerView.adapter = smbFileListFragment
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
     }
 }

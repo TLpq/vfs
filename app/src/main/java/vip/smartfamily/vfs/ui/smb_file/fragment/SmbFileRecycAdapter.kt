@@ -1,5 +1,6 @@
 package vip.smartfamily.vfs.ui.smb_file.fragment
 
+import android.app.Activity
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
@@ -18,16 +19,16 @@ import vip.smartfamily.vfs.data.smb.SmbFileTree
 import vip.smartfamily.vfs.ui.smb_file.FolderViewHolder
 import vip.smartfamily.vfs.ui.smb_file.fragment.inter.TopClickListener
 import vip.smartfamily.vfs.ui.smb_file.my_view.DialogFileChoice
-import java.text.SimpleDateFormat
 import java.util.*
 
 class SmbFileRecycAdapter(
+        private val activity: Activity?,
         private val diskShare: DiskShare,
         private val smbFileInfoList: ArrayList<SmbFileTree>,
         private val topClickListener: TopClickListener
 ) : RecyclerView.Adapter<FolderViewHolder>() {
 
-    private final val fileDateModel = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
+    //private final val fileDateModel = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FolderViewHolder {
         val folderView = LayoutInflater.from(parent.context).inflate(
@@ -136,7 +137,12 @@ class SmbFileRecycAdapter(
                 }
 
                 iconView.setOnLongClickListener {
-                    val dialogFileChoice = DialogFileChoice(itemView.context, DialogFileChoice.VFS_FILE, smbFileTree)
+                    val dialogFileChoice = object : DialogFileChoice(itemView.context, DialogFileChoice.VFS_FILE, smbFileTree) {
+                        override fun onDownload(): Boolean {
+                            activity
+                            return false
+                        }
+                    }
                     dialogFileChoice.show()
 
                     /*val addConView = LayoutInflater.from(itemView.context).inflate(R.layout.dialog_file_info, null).apply {

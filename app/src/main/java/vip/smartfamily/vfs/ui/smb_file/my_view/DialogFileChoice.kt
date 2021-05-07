@@ -24,7 +24,7 @@ import java.util.*
  * 下载文件夹选择器
  */
 
-class DialogFileChoice : Dialog, View.OnClickListener {
+abstract class DialogFileChoice : Dialog, View.OnClickListener {
 
     private var code = ""
     private var smbFileInfo: SmbFileInfo? = null
@@ -147,15 +147,30 @@ class DialogFileChoice : Dialog, View.OnClickListener {
         v?.let {
             when (it.id) {
                 R.id.cl_dia_file_recon -> {
+                    //onButton2()
                 }
                 R.id.cl_dia_file_rename -> {
+                    //onButton3()
                 }
                 R.id.cl_dia_file_download -> {
-
+                    if (onDownload()) {
+                        showFolderChoiceDialog()
+                    }
                 }
             }
         }
     }
+
+    /**
+     * 显示选择本地文件夹Dialog
+     */
+    fun showFolderChoiceDialog() {
+
+    }
+
+    abstract fun onDownload(): Boolean
+    //abstract fun onButton2()
+    //abstract fun onButton3()
 
     companion object {
         const val VFS_DISK = "VFS_DISK"
