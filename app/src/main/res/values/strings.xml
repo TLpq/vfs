@@ -11,6 +11,7 @@
     <string name="login_failed">"Login failed"</string>
 
     <string name="add_con">添加VFS</string>
+    <string name="add_recon">修改VFS</string>
     <string name="con_agreement">VFS协议：</string>
     <string name="con_agreement_smb">SMB</string>
     <string name="con_ip_text">I  P：</string>

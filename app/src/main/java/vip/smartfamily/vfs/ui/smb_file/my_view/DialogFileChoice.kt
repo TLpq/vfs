@@ -9,7 +9,10 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -17,6 +20,7 @@ import kotlinx.coroutines.withContext
 import vip.smartfamily.vfs.R
 import vip.smartfamily.vfs.data.smb.SmbFileInfo
 import vip.smartfamily.vfs.data.smb.SmbFileTree
+import vip.smartfamily.vfs.db.repository.SmbConRepository
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -148,6 +152,9 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
             when (it.id) {
                 R.id.cl_dia_file_recon -> {
                     //onButton2()
+                    smbFileInfo?.let { info ->
+                        initReconDialog(context, info)
+                    }
                 }
                 R.id.cl_dia_file_rename -> {
                     //onButton3()
@@ -155,7 +162,11 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
                 R.id.cl_dia_file_download -> {
                     if (onDownload()) {
                         showFolderChoiceDialog()
+                    } else {
+
                     }
+                }
+                else -> {
                 }
             }
         }
@@ -166,6 +177,89 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
      */
     fun showFolderChoiceDialog() {
 
+    }
+
+    /**
+     * 修改连接
+     * [smbFileInfo] smb文件信息
+     */
+    private fun initReconDialog(context: Context, smbFileInfo: SmbFileInfo) {
+        val smbConInfo = SmbConRepository.getInstance().getData(smbFileInfo.smbConInfo.ip, smbFileInfo.smbConInfo.path)
+        smbConInfo?.let { smbInfo ->
+            val layoutInflater = LayoutInflater.from(context)
+            val reconView = layoutInflater.inflate(R.layout.dialog_add_con, null).apply {
+                findViewById<TextView>(R.id.tv_d_add_title).text = resources.getString(R.string.add_recon)
+            }
+            val dialogBuilder = AlertDialog.Builder(context)
+            dialogBuilder.setView(reconView)
+            val reconDialog = dialogBuilder.create()
+            reconDialog.setCancelable(false)
+            // 背景透明
+            reconDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            reconDialog.show()
+
+            val ipEditText = reconView.findViewById<TextInputEditText>(R.id.tiet_dia_ip)
+            ipEditText.setText(smbInfo.ip)
+            val ipTextLayout = reconView.findViewById<TextInputLayout>(R.id.til_dia_ip)
+
+            val userEditText = reconView.findViewById<TextInputEditText>(R.id.tiet_dia_user)
+            userEditText.setText(smbInfo.user)
+            val userTextLayout = reconView.findViewById<TextInputLayout>(R.id.til_dia_user)
+
+            val pawEditText = reconView.findViewById<TextInputEditText>(R.id.tiet_dia_paw)
+            pawEditText.setText(smbInfo.paw)
+            val pawTextLayout = reconView.findViewById<TextInputLayout>(R.id.til_dia_paw)
+
+            val pathEditText = reconView.findViewById<TextInputEditText>(R.id.tiet_dia_path)
+            pathEditText.setText(smbInfo.path)
+            val pathTextLayout = reconView.findViewById<TextInputLayout>(R.id.til_dia_path)
+
+            val certainButton = reconView.findViewById<TextView>(R.id.tv_dia_certain)
+            certainButton.setOnClickListener {
+                certainButton.isEnabled = false
+                var b = true
+                if (ipEditText.text.toString().isEmpty()) {
+                    ipTextLayout.error = context.resources.getString(R.string.ip_not_null)
+                    b = false
+                } else {
+                    ipTextLayout.error = null
+                }
+
+                if (userEditText.text.toString().isEmpty()) {
+                    userTextLayout.error = context.resources.getString(R.string.user_not_null)
+                    b = false
+                } else {
+                    userTextLayout.error = null
+                }
+
+                if (pawEditText.text.toString().isEmpty()) {
+                    pawTextLayout.error = context.resources.getString(R.string.paw_not_null)
+                    b = false
+                } else {
+                    pawTextLayout.error = null
+                }
+
+                if (pathEditText.text.toString().isEmpty()) {
+                    pathTextLayout.error = context.resources.getString(R.string.path_not_null)
+                    b = false
+                } else {
+                    pathTextLayout.error = null
+                }
+                if (b) {
+                    smbInfo.path = pathEditText.text.toString()
+                    smbInfo.ip = ipEditText.text.toString()
+                    smbInfo.user = userEditText.text.toString()
+                    smbInfo.paw = pawEditText.text.toString()
+                    smbInfo.path = pathEditText.text.toString()
+                    SmbConRepository.getInstance().upData(smbInfo)
+                    reconDialog.dismiss()
+                }
+            }
+
+            reconView.findViewById<TextView>(R.id.tv_dia_cancel).setOnClickListener {
+                reconDialog.dismiss()
+            }
+        }
     }
 
     abstract fun onDownload(): Boolean

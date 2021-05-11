@@ -1,17 +1,11 @@
 package vip.smartfamily.vfs.ui.smb_file
 
-import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.hierynomus.smbj.SMBClient
 import com.hierynomus.smbj.auth.AuthenticationContext
 import com.hierynomus.smbj.share.DiskShare
@@ -20,10 +14,12 @@ import vip.smartfamily.vfs.R
 import vip.smartfamily.vfs.data.smb.SmbFileInfo
 import vip.smartfamily.vfs.data.smb.SmbFileTree
 import vip.smartfamily.vfs.db.entity.SmbConInfo
-import vip.smartfamily.vfs.db.repository.SmbConRepository
 import vip.smartfamily.vfs.ui.smb_file.fragment.inter.TopClickListener
 import vip.smartfamily.vfs.ui.smb_file.my_view.DialogFileChoice
 
+/**
+ * 文件夹展示
+ */
 class FolderRecyclerAdapter(
         folderList: List<SmbConInfo>,
         private val topClickListener: TopClickListener
@@ -75,15 +71,14 @@ class FolderRecyclerAdapter(
                         }
 
                         withContext(Dispatchers.Main) {
+                            statusView.setBackgroundResource(R.drawable.ic_folder_status_true)
+                            notifyDataSetChanged()
                             iconView.setOnClickListener {
                                 topClickListener.onClickDisk(smbFileInfo.diskShare!!, smbFileInfo.fileTrees!!)
                             }
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        withContext(Dispatchers.Main) {
-                            statusView.setBackgroundResource(R.drawable.ic_folder_status_false)
-                        }
                     }
                 }
             }
@@ -112,87 +107,6 @@ class FolderRecyclerAdapter(
         } catch (e: Exception) {
         }
         notifyDataSetChanged()
-    }
-
-    /**
-     * 修改连接
-     * [smbFileInfo] smb文件信息
-     */
-    private fun initReconDialog(context: Context, smbFileInfo: SmbFileInfo) {
-        val smbConInfo = SmbConRepository.getInstance().getData(smbFileInfo.smbConInfo.ip, smbFileInfo.smbConInfo.path)
-        smbConInfo?.let { smbInfo ->
-            val layoutInflater = LayoutInflater.from(context)
-            val reconView = layoutInflater.inflate(R.layout.dialog_add_con, null)
-            val dialogBuilder = AlertDialog.Builder(context)
-            dialogBuilder.setView(reconView)
-            val reconDialog = dialogBuilder.create()
-            reconDialog.setCancelable(false)
-            // 背景透明
-            reconDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            reconDialog.show()
-
-            val ipEditText = reconView.findViewById<TextInputEditText>(R.id.tiet_dia_ip)
-            ipEditText.setText(smbInfo.ip)
-            val ipTextLayout = reconView.findViewById<TextInputLayout>(R.id.til_dia_ip)
-
-            val userEditText = reconView.findViewById<TextInputEditText>(R.id.tiet_dia_user)
-            userEditText.setText(smbInfo.user)
-            val userTextLayout = reconView.findViewById<TextInputLayout>(R.id.til_dia_user)
-
-            val pawEditText = reconView.findViewById<TextInputEditText>(R.id.tiet_dia_paw)
-            pawEditText.setText(smbInfo.paw)
-            val pawTextLayout = reconView.findViewById<TextInputLayout>(R.id.til_dia_paw)
-
-            val pathEditText = reconView.findViewById<TextInputEditText>(R.id.tiet_dia_path)
-            pathEditText.setText(smbInfo.path)
-            val pathTextLayout = reconView.findViewById<TextInputLayout>(R.id.til_dia_path)
-
-            val certainButton = reconView.findViewById<TextView>(R.id.tv_dia_certain)
-            certainButton.setOnClickListener {
-                certainButton.isEnabled = false
-                var b = true
-                if (ipEditText.text.toString().isEmpty()) {
-                    ipTextLayout.error = context.resources.getString(R.string.ip_not_null)
-                    b = false
-                } else {
-                    ipTextLayout.error = null
-                }
-
-                if (userEditText.text.toString().isEmpty()) {
-                    userTextLayout.error = context.resources.getString(R.string.user_not_null)
-                    b = false
-                } else {
-                    userTextLayout.error = null
-                }
-
-                if (pawEditText.text.toString().isEmpty()) {
-                    pawTextLayout.error = context.resources.getString(R.string.paw_not_null)
-                    b = false
-                } else {
-                    pawTextLayout.error = null
-                }
-
-                if (pathEditText.text.toString().isEmpty()) {
-                    pathTextLayout.error = context.resources.getString(R.string.path_not_null)
-                    b = false
-                } else {
-                    pathTextLayout.error = null
-                }
-                if (b) {
-                    smbInfo.path = pathEditText.text.toString()
-                    smbInfo.ip = ipEditText.text.toString()
-                    smbInfo.user = userEditText.text.toString()
-                    smbInfo.paw = pawEditText.text.toString()
-                    smbInfo.path = pathEditText.text.toString()
-                    SmbConRepository.getInstance().upData(smbInfo)
-                    reconDialog.dismiss()
-                }
-            }
-
-            reconView.findViewById<TextView>(R.id.tv_dia_cancel).setOnClickListener {
-                reconDialog.dismiss()
-            }
-        }
     }
 }
 
