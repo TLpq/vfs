@@ -86,7 +86,6 @@
                 android:hint="@string/con_ip_text_hint"
                 app:errorEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@id/tv_dia_user_hint"
                 app:layout_constraintTop_toBottomOf="@id/tv_dia_agreement">
 

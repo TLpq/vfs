@@ -1,5 +1,6 @@
 package vip.smartfamily.vfs.ui.smb_file
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +19,7 @@ import vip.smartfamily.vfs.ui.smb_file.fragment.inter.TopClickListener
 import vip.smartfamily.vfs.ui.smb_file.my_view.DialogFileChoice
 
 /**
- * 文件夹展示
+ * SMB连接列表适配器
  */
 class FolderRecyclerAdapter(
         folderList: List<SmbConInfo>,
@@ -44,8 +45,11 @@ class FolderRecyclerAdapter(
         return FolderViewHolder(folderView)
     }
 
+    var index = 0;
+
     override fun onBindViewHolder(holder: FolderViewHolder, position: Int) {
         val smbFileInfo = smbFileList[position]
+        Log.e("onBindViewHolder","调用onBindViewHolder：${++index}")
         holder.run {
             nameView.text = smbFileInfo.smbConInfo.name
             runBlocking {
@@ -58,10 +62,11 @@ class FolderRecyclerAdapter(
                             val session = connection.authenticate(ac)
                             val share = session.connectShare(path) as DiskShare
                             smbFileInfo.diskShare = share
+                            smbFileInfo.fileTrees?.clear()
                             for (fileInfo in share.list("", "*")) {
                                 if ("." != fileInfo.fileName && ".." != fileInfo.fileName) {
                                     smbFileInfo.fileTrees
-                                            ?: synchronized(this@FolderRecyclerAdapter) {
+                                            ?: synchronized(FolderRecyclerAdapter::class) {
                                                 smbFileInfo.fileTrees = ArrayList()
                                             }
                                     val smbFileTree = SmbFileTree("", fileInfo, null)
@@ -72,13 +77,13 @@ class FolderRecyclerAdapter(
 
                         withContext(Dispatchers.Main) {
                             statusView.setBackgroundResource(R.drawable.ic_folder_status_true)
-                            notifyDataSetChanged()
                             iconView.setOnClickListener {
                                 topClickListener.onClickDisk(smbFileInfo.diskShare!!, smbFileInfo.fileTrees!!)
                             }
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
+                        Log.e("onBindViewHolder","${e.message}")
                     }
                 }
             }

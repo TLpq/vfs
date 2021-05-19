@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="@dimen/dp_300"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            tools:background="@android:color/holo_blue_bright">
+
+            <TextView
+                android:id="@+id/tv_d_rename_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dialog_rename"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                app:layout_constraintBottom_toTopOf="@id/v_d_rename_01"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/v_d_rename_01"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_0_1"
+                android:layout_marginStart="@dimen/dp_21"
+                android:layout_marginTop="@dimen/dp_50"
+                android:layout_marginEnd="@dimen/dp_21"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_dia_rename"
+                style="@style/Widget.Shrine.TextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_80"
+                android:layout_marginStart="@dimen/dp_21"
+                android:layout_marginTop="@dimen/dp_21"
+                android:layout_marginEnd="@dimen/dp_21"
+                android:hint="@string/dialog_rename_hint"
+                app:errorEnabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/v_d_rename_01">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tiet_dia_rename"
+                    style="@style/textModel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:id="@+id/v_d_rename_02"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_0_1"
+                android:layout_marginTop="@dimen/dp_21"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/til_dia_rename" />
+
+            <View
+                android:id="@+id/v_d_rename_03"
+                android:layout_width="@dimen/dp_0_1"
+                android:layout_height="@dimen/dp_50"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/v_d_rename_02" />
+
+            <TextView
+                android:id="@+id/tv_dia_rename_certain"
+                style="@style/textModel"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_50"
+                android:background="@drawable/ic_add_vfs_certain"
+                android:gravity="center"
+                android:text="@string/con_certain"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/v_d_rename_03"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/v_d_rename_02" />
+
+            <TextView
+                android:id="@+id/tv_dia_rename_cancel"
+                style="@style/textModel"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_50"
+                android:background="@drawable/ic_add_vfs_cancel"
+                android:gravity="center"
+                android:text="@string/con_cancel"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/v_d_rename_03"
+                app:layout_constraintTop_toBottomOf="@id/v_d_rename_02" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

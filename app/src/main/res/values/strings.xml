@@ -34,4 +34,5 @@
     <string name="dialog_look">查  看</string>
     <string name="dialog_rename">重命名</string>
     <string name="dialog_recon">修改连接</string>
+    <string name="dialog_rename_hint">请输入文件名</string>
 </resources>

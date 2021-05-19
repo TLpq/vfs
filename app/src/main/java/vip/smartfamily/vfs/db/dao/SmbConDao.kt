@@ -6,6 +6,9 @@ import androidx.room.Query
 import androidx.room.Update
 import vip.smartfamily.vfs.db.entity.SmbConInfo
 
+/**
+ * 查询连接
+ */
 @Dao
 interface SmbConDao {
     @Insert

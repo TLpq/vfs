@@ -13,13 +13,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import vip.smartfamily.vfs.R
 import vip.smartfamily.vfs.data.smb.SmbFileInfo
 import vip.smartfamily.vfs.data.smb.SmbFileTree
+import vip.smartfamily.vfs.db.entity.SmbConInfo
 import vip.smartfamily.vfs.db.repository.SmbConRepository
 import java.text.SimpleDateFormat
 import java.util.*
@@ -61,6 +59,7 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
             val msgTextView = findViewById<TextView>(R.id.tv_dia_file_date)
 
             when {
+                // 磁盘文件
                 smbFileInfo != null -> {
                     nameTextView.text = smbFileInfo!!.smbConInfo.name
                     GlobalScope.launch(Dispatchers.IO) {
@@ -113,6 +112,7 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
                         }
                     }
                 }
+                // 普通文件
                 smbFileTree != null -> {
                     findViewById<TextView>(R.id.tv_dia_file_look).text = context.resources.getString(R.string.dialog_look)
                     findViewById<ConstraintLayout>(R.id.cl_dia_file_download).apply {
@@ -157,7 +157,18 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
                     }
                 }
                 R.id.cl_dia_file_rename -> {
+                    showRenameDialog()
                     //onButton3()
+                    /*when (code) {
+                        VFS_DISK -> {
+
+                        }
+                        VFS_FILE -> {
+
+                        }
+                        else -> {
+                        }
+                    }*/
                 }
                 R.id.cl_dia_file_download -> {
                     if (onDownload()) {
@@ -177,6 +188,48 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
      */
     fun showFolderChoiceDialog() {
 
+    }
+
+    /**
+     * 显示重命名Dialog
+     */
+    private fun showRenameDialog() {
+        var smbConInfo: SmbConInfo? = null
+        val dialog = Dialog(context)
+        val view = LayoutInflater.from(context).inflate(R.layout.dialog_edit_text, null).apply {
+            val editText = findViewById<TextInputEditText>(R.id.tiet_dia_rename)
+
+            findViewById<TextView>(R.id.tv_dia_rename_certain).setOnClickListener {
+                smbConInfo?.let {
+                    val nowName = editText.text.toString()
+                    if (nowName.isNotBlank()) {
+                        it.name = nowName
+                        SmbConRepository.getInstance().upData(it)
+                    }
+                }
+                dialog.dismiss()
+            }
+            findViewById<TextView>(R.id.tv_dia_rename_cancel).setOnClickListener {
+                dialog.dismiss()
+            }
+
+            runBlocking {
+                GlobalScope.launch {
+                    smbConInfo = SmbConRepository.getInstance().getData(
+                            smbFileInfo?.smbConInfo!!.ip,
+                            smbFileInfo?.smbConInfo!!.path)
+
+                    withContext(Dispatchers.Main) {
+                        editText.setText(smbConInfo?.name)
+                    }
+                }
+            }
+        }
+
+        dialog.setCancelable(false)
+        dialog.setContentView(view)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.show()
     }
 
     /**
@@ -263,8 +316,6 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
     }
 
     abstract fun onDownload(): Boolean
-    //abstract fun onButton2()
-    //abstract fun onButton3()
 
     companion object {
         const val VFS_DISK = "VFS_DISK"
