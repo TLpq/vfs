@@ -35,4 +35,6 @@
     <string name="dialog_rename">重命名</string>
     <string name="dialog_recon">修改连接</string>
     <string name="dialog_rename_hint">请输入文件名</string>
+
+    <string name="toast_no_permission">无存储读写权限，无法使用下载功能！</string>
 </resources>

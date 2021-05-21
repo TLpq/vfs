@@ -19,8 +19,8 @@ class SmbConListFragment(
     private var fragment: View? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        fragment?: synchronized(this){
-            fragment?:inflater.inflate(R.layout.fragment_file_list, container, false).also {
+        fragment ?: synchronized(this) {
+            fragment ?: inflater.inflate(R.layout.fragment_file_list, container, false).also {
                 fragment = it
                 val recyclerView = it.findViewById<RecyclerView>(R.id.rv_fragment_file_list)
                 val staggeredGridLayoutManager = StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL)

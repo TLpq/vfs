@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.textfield.TextInputEditText
@@ -42,9 +43,6 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
         this.code = code
         this.smbFileTree = smbFileTree
     }
-
-    //constructor(context: Context, themeResId: Int) : super(context, themeResId)
-    //constructor(context: Context, cancelable: Boolean, cancelListener: DialogInterface.OnCancelListener?) : super(context, cancelable, cancelListener)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -158,24 +156,9 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
                 }
                 R.id.cl_dia_file_rename -> {
                     showRenameDialog()
-                    //onButton3()
-                    /*when (code) {
-                        VFS_DISK -> {
-
-                        }
-                        VFS_FILE -> {
-
-                        }
-                        else -> {
-                        }
-                    }*/
                 }
                 R.id.cl_dia_file_download -> {
-                    if (onDownload()) {
-                        showFolderChoiceDialog()
-                    } else {
-
-                    }
+                    onDownload()
                 }
                 else -> {
                 }
@@ -186,8 +169,8 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
     /**
      * 显示选择本地文件夹Dialog
      */
-    fun showFolderChoiceDialog() {
-
+    public fun showFolderChoiceDialog() {
+        Toast.makeText(context, "请选择文件夹", Toast.LENGTH_SHORT).show()
     }
 
     /**
@@ -214,13 +197,15 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
             }
 
             runBlocking {
-                GlobalScope.launch {
-                    smbConInfo = SmbConRepository.getInstance().getData(
-                            smbFileInfo?.smbConInfo!!.ip,
-                            smbFileInfo?.smbConInfo!!.path)
+                if (code == VFS_DISK) {
+                    GlobalScope.launch {
+                        smbConInfo = SmbConRepository.getInstance().getData(
+                                smbFileInfo?.smbConInfo!!.ip,
+                                smbFileInfo?.smbConInfo!!.path)
 
-                    withContext(Dispatchers.Main) {
-                        editText.setText(smbConInfo?.name)
+                        withContext(Dispatchers.Main) {
+                            editText.setText(smbConInfo?.name)
+                        }
                     }
                 }
             }
@@ -315,7 +300,7 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
         }
     }
 
-    abstract fun onDownload(): Boolean
+    abstract fun onDownload()
 
     companion object {
         const val VFS_DISK = "VFS_DISK"

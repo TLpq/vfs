@@ -21,7 +21,7 @@ import vip.smartfamily.vfs.ui.smb_file.fragment.inter.TopClickListener
 import vip.smartfamily.vfs.ui.smb_file.my_view.DialogFileChoice
 import java.util.*
 
-class SmbFileRecycAdapter(
+abstract class SmbFileRecycAdapter(
         private val activity: Activity?,
         private val diskShare: DiskShare,
         private val smbFileInfoList: ArrayList<SmbFileTree>,
@@ -29,6 +29,8 @@ class SmbFileRecycAdapter(
 ) : RecyclerView.Adapter<FolderViewHolder>() {
 
     //private final val fileDateModel = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
+
+    private var dialogFileChoice: DialogFileChoice? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FolderViewHolder {
         val folderView = LayoutInflater.from(parent.context).inflate(
@@ -137,32 +139,12 @@ class SmbFileRecycAdapter(
                 }
 
                 iconView.setOnLongClickListener {
-                    val dialogFileChoice = object : DialogFileChoice(itemView.context, DialogFileChoice.VFS_FILE, smbFileTree) {
-                        override fun onDownload(): Boolean {
-                            activity
-                            return false
+                    dialogFileChoice = object : DialogFileChoice(itemView.context, DialogFileChoice.VFS_FILE, smbFileTree) {
+                        override fun onDownload() {
+                            onWriteStorage()
                         }
                     }
-                    dialogFileChoice.show()
-
-                    /*val addConView = LayoutInflater.from(itemView.context).inflate(R.layout.dialog_file_info, null).apply {
-                        findViewById<TextView>(R.id.tv_dia_file_name).text = smbFileTree.fileInfo.fileName
-                        findViewById<TextView>(R.id.tv_dia_file_date).text =
-                                fileDateModel.format(smbFileTree.fileInfo.changeTime.toDate())
-
-                        findViewById<ConstraintLayout>(R.id.cl_dia_file_download).setOnClickListener { }
-
-                        findViewById<ConstraintLayout>(R.id.cl_dia_file_rename).setOnClickListener { }
-
-                        findViewById<ConstraintLayout>(R.id.cl_dia_file_recon).setOnClickListener { }
-
-                    }
-                    val dialog = Dialog(itemView.context, R.style.style_dialog)
-                    dialog.setContentView(addConView)
-                    dialog.window?.setGravity(Gravity.BOTTOM)
-                    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                    dialog.window?.setWindowAnimations(R.style.dialog_animation)
-                    dialog.show()*/
+                    dialogFileChoice?.show()
 
                     true
                 }
@@ -170,5 +152,11 @@ class SmbFileRecycAdapter(
         }
     }
 
+    public fun showFolderChoiceDialog() {
+        dialogFileChoice?.showFolderChoiceDialog()
+    }
+
     override fun getItemCount() = smbFileInfoList.size
+
+    abstract fun onWriteStorage()
 }

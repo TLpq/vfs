@@ -197,7 +197,7 @@ class SmbFileActivity : AppCompatActivity(), TopClickListener {
             }
         }
 
-        dff()
+        //dff()
     }
 
 

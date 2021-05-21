@@ -49,7 +49,7 @@ class FolderRecyclerAdapter(
 
     override fun onBindViewHolder(holder: FolderViewHolder, position: Int) {
         val smbFileInfo = smbFileList[position]
-        Log.e("onBindViewHolder","调用onBindViewHolder：${++index}")
+        Log.e("onBindViewHolder", "调用onBindViewHolder：${++index}")
         holder.run {
             nameView.text = smbFileInfo.smbConInfo.name
             runBlocking {
@@ -83,7 +83,7 @@ class FolderRecyclerAdapter(
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        Log.e("onBindViewHolder","${e.message}")
+                        Log.e("onBindViewHolder", "${e.message}")
                     }
                 }
             }
@@ -91,7 +91,9 @@ class FolderRecyclerAdapter(
             detailsView.visibility = View.VISIBLE
             detailsView.setOnClickListener {
                 val dialogFileChoice = object : DialogFileChoice(itemView.context, DialogFileChoice.VFS_DISK, smbFileInfo) {
-                    override fun onDownload() = false
+                    override fun onDownload(): Boolean {
+                        return false
+                    }
                 }
                 dialogFileChoice.show()
             }
