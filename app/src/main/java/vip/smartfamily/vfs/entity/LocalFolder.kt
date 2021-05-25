@@ -5,4 +5,4 @@ import java.io.File
 /**
  * 本地文件夹信息
  */
-public class LocalFolder(val name: String, val path: File)
+class LocalFolder(val name: String, val path: File)

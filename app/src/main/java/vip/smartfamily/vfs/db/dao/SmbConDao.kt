@@ -1,5 +1,6 @@
 package vip.smartfamily.vfs.db.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -25,6 +26,9 @@ interface SmbConDao {
 
     @Query("SELECT * FROM connection_info WHERE ip=:ip AND path=:path")
     fun getData(ip: String, path: String): SmbConInfo
+
+    @Query("SELECT * FROM connection_info")
+    fun getLiveData(): LiveData<List<SmbConInfo>>
 
     @Query("DELETE FROM connection_info WHERE guid=:guid")
     fun delete(guid: String)

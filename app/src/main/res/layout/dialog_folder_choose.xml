@@ -7,14 +7,15 @@
     app:cardCornerRadius="@dimen/dp_8">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/white">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center|start"
+            android:text="@string/choose_folder"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_16"
             app:layout_constraintBottom_toTopOf="@id/v_dia_folder_01"
@@ -42,6 +43,7 @@
             android:layout_marginStart="@dimen/dp_21"
             android:layout_marginTop="@dimen/dp_8"
             android:gravity="center|start"
+            android:text="@string/choose_folder_name"
             android:textColor="@android:color/black"
             android:textSize="@dimen/sp_16"
             app:layout_constraintStart_toStartOf="parent"

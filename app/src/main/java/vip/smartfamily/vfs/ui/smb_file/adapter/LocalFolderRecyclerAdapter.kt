@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import vip.smartfamily.vfs.R
 import vip.smartfamily.vfs.entity.LocalFolder
 
-public class LocalFolderRecyclerAdapter(
+class LocalFolderRecyclerAdapter(
         private val localFolderList: ArrayList<LocalFolder>
 ) : RecyclerView.Adapter<LocalFolderViewHolder>() {
 
