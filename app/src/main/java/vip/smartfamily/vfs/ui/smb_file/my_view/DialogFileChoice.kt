@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.storage.StorageManager
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.*
@@ -20,8 +23,11 @@ import vip.smartfamily.vfs.data.smb.SmbFileInfo
 import vip.smartfamily.vfs.data.smb.SmbFileTree
 import vip.smartfamily.vfs.db.entity.SmbConInfo
 import vip.smartfamily.vfs.db.repository.SmbConRepository
+import vip.smartfamily.vfs.entity.LocalFolder
+import vip.smartfamily.vfs.ui.smb_file.adapter.LocalFolderRecyclerAdapter
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * 下载文件夹选择器
@@ -169,8 +175,48 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
     /**
      * 显示选择本地文件夹Dialog
      */
-    public fun showFolderChoiceDialog() {
-        Toast.makeText(context, "请选择文件夹", Toast.LENGTH_SHORT).show()
+    fun showFolderChoiceDialog() {
+        val folderList = ArrayList<LocalFolder>()
+
+        val server = context.getSystemService(Context.STORAGE_SERVICE) as StorageManager
+
+        val list = server.storageVolumes
+
+        if (!list.isNullOrEmpty()) {
+            for (storageVolume in list) {
+                storageVolume.getDescription(context)?.let { name ->
+                    storageVolume.directory?.let { path ->
+                        folderList.add(LocalFolder(name, path))
+                    }
+                }
+            }
+        }
+
+        if (folderList.isNotEmpty()) {
+            val dialog = Dialog(context)
+            val view = LayoutInflater.from(context).inflate(R.layout.dialog_folder_choose, null).apply {
+                val recyclerview = findViewById<RecyclerView>(R.id.rc_dia_folder)
+                val adapter = LocalFolderRecyclerAdapter(folderList)
+                recyclerview.adapter = adapter
+                val staggeredGridLayoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
+                recyclerview.layoutManager = staggeredGridLayoutManager
+
+                findViewById<TextView>(R.id.tv_dia_folder_certain).setOnClickListener {
+                    dialog.dismiss()
+                }
+
+                findViewById<TextView>(R.id.tv_dia_folder_cancel).setOnClickListener {
+                    dialog.dismiss()
+                }
+            }
+
+            dialog.setCancelable(false)
+            dialog.setContentView(view)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.show()
+        } else {
+            Toast.makeText(context, "无可用存储", Toast.LENGTH_SHORT).show()
+        }
     }
 
     /**

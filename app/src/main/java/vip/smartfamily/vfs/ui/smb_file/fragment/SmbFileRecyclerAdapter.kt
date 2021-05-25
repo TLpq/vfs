@@ -21,7 +21,7 @@ import vip.smartfamily.vfs.ui.smb_file.fragment.inter.TopClickListener
 import vip.smartfamily.vfs.ui.smb_file.my_view.DialogFileChoice
 import java.util.*
 
-abstract class SmbFileRecycAdapter(
+abstract class SmbFileRecyclerAdapter(
         private val activity: Activity?,
         private val diskShare: DiskShare,
         private val smbFileInfoList: ArrayList<SmbFileTree>,

@@ -6,11 +6,11 @@ plugins {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "29.0.3"
+    buildToolsVersion '30.0.0'
 
     defaultConfig {
         applicationId "vip.smartfamily.vfs"
-        minSdkVersion 23
+        minSdkVersion 30
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
