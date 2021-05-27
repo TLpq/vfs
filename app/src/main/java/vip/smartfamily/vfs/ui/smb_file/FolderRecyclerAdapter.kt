@@ -91,7 +91,11 @@ class FolderRecyclerAdapter(
             detailsView.visibility = View.VISIBLE
             detailsView.setOnClickListener {
                 val dialogFileChoice = object : DialogFileChoice(itemView.context, DialogFileChoice.VFS_DISK, smbFileInfo) {
-                    override fun onDownload(){
+                    override fun onCheckPermission(){
+
+                    }
+
+                    override fun onDownload(loadPath: String?) {
 
                     }
                 }

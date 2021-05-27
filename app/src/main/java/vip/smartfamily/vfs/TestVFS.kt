@@ -15,8 +15,8 @@ object TestVFS {
     fun main(args: Array<String>) {
         val client = SMBClient()
         try {
-            client.connect("192.168.101.15").use { connection ->
-                val ac = AuthenticationContext("SUMBUM", "zdzdzdzd".toCharArray(), "192.168.101.15")
+            client.connect("192.168.101.224").use { connection ->
+                val ac = AuthenticationContext("SUMBUM", "zdzdzdzd".toCharArray(), "192.168.101.224")
                 val session = connection.authenticate(ac)
                 try {
                     // Connect to Share

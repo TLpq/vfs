@@ -1,6 +1,7 @@
 package vip.smartfamily.vfs.db.repository
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import vip.smartfamily.vfs.db.AppDatabase
 import vip.smartfamily.vfs.db.dao.SmbConDao
 import vip.smartfamily.vfs.db.entity.SmbConInfo
@@ -31,6 +32,17 @@ class SmbConRepository private constructor(private val smbConDao: SmbConDao) {
         CoroutineScope(Dispatchers.IO).launch {
             smbConDao.upData(smbConInfo)
         }
+    }
+
+    fun getLiveData(): Flow<List<SmbConInfo>> {
+        var data: Flow<List<SmbConInfo>>
+        runBlocking {
+            data = withContext(Dispatchers.IO) {
+                data = smbConDao.getLiveData()
+                data
+            }
+        }
+        return data
     }
 
     fun getData(ip: String, path: String): SmbConInfo? {

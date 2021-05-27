@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputEditText
@@ -28,7 +27,6 @@ import vip.smartfamily.vfs.app_executors.AppExecutors
 import vip.smartfamily.vfs.data.smb.SmbFileTree
 import vip.smartfamily.vfs.db.entity.SmbConInfo
 import vip.smartfamily.vfs.db.repository.SmbConRepository
-import vip.smartfamily.vfs.model.SmbFileViewModel
 import vip.smartfamily.vfs.ui.smb_file.fragment.SmbConListFragment
 import vip.smartfamily.vfs.ui.smb_file.fragment.SmbFileListFragment
 import vip.smartfamily.vfs.ui.smb_file.fragment.ViewPagerFragmentStateAdapter
@@ -36,9 +34,9 @@ import vip.smartfamily.vfs.ui.smb_file.fragment.inter.TopClickListener
 
 class SmbFileActivity : AppCompatActivity(), TopClickListener {
 
-    init {
+    /*init {
         val s = ViewModelProvider(this).get(SmbFileViewModel::class.java)
-    }
+    }*/
 
     /**
      * include视图

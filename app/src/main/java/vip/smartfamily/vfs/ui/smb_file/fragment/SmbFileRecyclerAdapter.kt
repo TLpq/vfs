@@ -1,6 +1,5 @@
 package vip.smartfamily.vfs.ui.smb_file.fragment
 
-import android.app.Activity
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
@@ -19,17 +18,15 @@ import vip.smartfamily.vfs.data.smb.SmbFileTree
 import vip.smartfamily.vfs.ui.smb_file.FolderViewHolder
 import vip.smartfamily.vfs.ui.smb_file.fragment.inter.TopClickListener
 import vip.smartfamily.vfs.ui.smb_file.my_view.DialogFileChoice
+import java.io.File
+import java.io.FileOutputStream
 import java.util.*
 
 abstract class SmbFileRecyclerAdapter(
-        private val activity: Activity?,
         private val diskShare: DiskShare,
         private val smbFileInfoList: ArrayList<SmbFileTree>,
         private val topClickListener: TopClickListener
 ) : RecyclerView.Adapter<FolderViewHolder>() {
-
-    //private final val fileDateModel = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
-
     private var dialogFileChoice: DialogFileChoice? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FolderViewHolder {
@@ -46,6 +43,7 @@ abstract class SmbFileRecyclerAdapter(
         holder.run {
             statusView.visibility = View.GONE
             smbFileTree.fileInfo?.let {
+                val fileName = it.fileName
                 val path = if (smbFileTree.path.isBlank()) {
                     it.fileName
                 } else {
@@ -56,7 +54,7 @@ abstract class SmbFileRecyclerAdapter(
                     iconView.setOnClickListener {
                         // 打开文件夹
                         runBlocking {
-                            val job = GlobalScope.launch {
+                            GlobalScope.launch {
                                 try {
                                     val directory: Directory = diskShare.openDirectory(
                                             path,
@@ -139,9 +137,62 @@ abstract class SmbFileRecyclerAdapter(
                 }
 
                 iconView.setOnLongClickListener {
-                    dialogFileChoice = object : DialogFileChoice(itemView.context, DialogFileChoice.VFS_FILE, smbFileTree) {
-                        override fun onDownload() {
+                    dialogFileChoice = object : DialogFileChoice(itemView.context, VFS_FILE, smbFileTree) {
+                        override fun onCheckPermission() {
                             onWriteStorage()
+                        }
+
+                        override fun onDownload(loadPath: String?) {
+
+                            loadPath?.let { loadFilePath ->
+                                val loadFile = File(loadFilePath)
+                                val url = loadFile
+                                if (loadFile.isDirectory) {
+                                    runBlocking {
+                                        GlobalScope.launch(Dispatchers.IO) {
+                                            var fos: FileOutputStream? = null
+                                            try {
+                                                val file = diskShare.openFile(
+                                                        path,
+                                                        HashSet(listOf(AccessMask.GENERIC_ALL)),
+                                                        HashSet(listOf(FileAttributes.FILE_ATTRIBUTE_NORMAL)),
+                                                        SMB2ShareAccess.ALL,
+                                                        SMB2CreateDisposition.FILE_OPEN,
+                                                        HashSet(listOf(SMB2CreateOptions.FILE_NON_DIRECTORY_FILE)))
+
+                                                fos = FileOutputStream(File(loadFile, fileName))
+                                                val buffer = ByteArray(1024)
+
+                                                do {
+                                                    val len = file.inputStream.read(buffer)
+                                                    if (len != -1) {
+                                                        fos.write(buffer, 0, len)
+                                                    }
+                                                } while (len != -1)
+
+                                                file.close()
+                                            } catch (e: Exception) {
+                                                e.printStackTrace()
+                                            } finally {
+                                                fos?.let { output ->
+                                                    try {
+                                                        output.flush()
+                                                    } catch (e: Exception) {
+                                                    }
+                                                    try {
+                                                        output.fd.sync()
+                                                    } catch (e: Exception) {
+                                                    }
+                                                    try {
+                                                        output.close()
+                                                    } catch (e: Exception) {
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                     dialogFileChoice?.show()
@@ -152,7 +203,22 @@ abstract class SmbFileRecyclerAdapter(
         }
     }
 
-    public fun showFolderChoiceDialog() {
+    /*fun createFile(pickerInitialUri: Uri){
+        // 索取用于创建PDF文档的代码.
+        val CREATE_FILE = 1
+
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "application/pdf"
+            putExtra(Intent.EXTRA_TITLE, "invoice.pdf")
+
+            // （可选）在您的应用创建文档之前，为应在系统文件选择器中打开的目录指定URI。
+            putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri)
+        }
+        startActivityForResult(intent, CREATE_FILE)
+    }*/
+
+    fun showFolderChoiceDialog() {
         dialogFileChoice?.showFolderChoiceDialog()
     }
 

@@ -46,7 +46,7 @@ class SmbFileListFragment(
         val recyclerView = fragmentView!!.findViewById<RecyclerView>(R.id.rv_fragment_file_list)
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL)
         recyclerView.layoutManager = staggeredGridLayoutManager
-        smbFileListFragment = object : SmbFileRecyclerAdapter(activity, diskShare, smbFileInfoList, topClickListener) {
+        smbFileListFragment = object : SmbFileRecyclerAdapter(diskShare, smbFileInfoList, topClickListener) {
             override fun onWriteStorage() {
                 permissionDetect()
             }

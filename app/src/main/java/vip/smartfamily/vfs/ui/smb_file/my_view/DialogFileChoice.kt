@@ -164,7 +164,7 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
                     showRenameDialog()
                 }
                 R.id.cl_dia_file_download -> {
-                    onDownload()
+                    onCheckPermission()
                 }
                 else -> {
                 }
@@ -186,7 +186,7 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
             for (storageVolume in list) {
                 storageVolume.getDescription(context)?.let { name ->
                     storageVolume.directory?.let { path ->
-                        folderList.add(LocalFolder(name, path))
+                        folderList.add(LocalFolder(name, path.path))
                     }
                 }
             }
@@ -196,12 +196,13 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
             val dialog = Dialog(context)
             val view = LayoutInflater.from(context).inflate(R.layout.dialog_folder_choose, null).apply {
                 val recyclerview = findViewById<RecyclerView>(R.id.rc_dia_folder)
-                val adapter = LocalFolderRecyclerAdapter(folderList)
+                val adapter = LocalFolderRecyclerAdapter(findViewById(R.id.tv_dia_folder_name), folderList)
                 recyclerview.adapter = adapter
                 val staggeredGridLayoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
                 recyclerview.layoutManager = staggeredGridLayoutManager
 
                 findViewById<TextView>(R.id.tv_dia_folder_certain).setOnClickListener {
+                    onDownload(adapter.path)
                     dialog.dismiss()
                 }
 
@@ -346,7 +347,8 @@ abstract class DialogFileChoice : Dialog, View.OnClickListener {
         }
     }
 
-    abstract fun onDownload()
+    abstract fun onCheckPermission()
+    abstract fun onDownload(loadPath: String?)
 
     companion object {
         const val VFS_DISK = "VFS_DISK"
