@@ -48,6 +48,18 @@ class SmbFileListFragment(
         recyclerView.layoutManager = staggeredGridLayoutManager
         smbFileListFragment = object : SmbFileRecyclerAdapter(diskShare, smbFileInfoList, topClickListener) {
             override fun onWriteStorage() {
+                /*val path = Environment.getDownloadCacheDirectory()
+                val CREATE_FILE = 1
+                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    type = "application/pdf"
+                    putExtra(Intent.EXTRA_TITLE, "invoice.pdf")
+
+                    // Optionally, specify a URI for the directory that should be opened in
+                    // the system file picker before your app creates the document.
+                    putExtra(DocumentsContract.EXTRA_INITIAL_URI, path.toURI())
+                }
+                startActivityForResult(intent, CREATE_FILE)*/
                 permissionDetect()
             }
         }

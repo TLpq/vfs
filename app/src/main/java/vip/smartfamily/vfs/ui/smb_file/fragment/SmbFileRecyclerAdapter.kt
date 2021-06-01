@@ -161,14 +161,16 @@ abstract class SmbFileRecyclerAdapter(
                                                         HashSet(listOf(SMB2CreateOptions.FILE_NON_DIRECTORY_FILE)))
 
                                                 fos = FileOutputStream(File(loadFile, fileName))
-                                                val buffer = ByteArray(1024)
+                                                file.read(fos)
+                                                /*val buffer = ByteArray(1024)
 
+                                                var len:Int
                                                 do {
-                                                    val len = file.inputStream.read(buffer)
+                                                    len = file.read(fos)
                                                     if (len != -1) {
                                                         fos.write(buffer, 0, len)
                                                     }
-                                                } while (len != -1)
+                                                } while (len != -1)*/
 
                                                 file.close()
                                             } catch (e: Exception) {
