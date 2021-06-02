@@ -57,6 +57,11 @@ class LocalFolderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
 private class DirFiler : FilenameFilter {
     override fun accept(p0: File?, p1: String?): Boolean {
+        p0?.let { file ->
+            p1?.let { name ->
+                return file.isDirectory && !name.contains(".")
+            }
+        }
         return p0?.isDirectory ?: false
     }
 }

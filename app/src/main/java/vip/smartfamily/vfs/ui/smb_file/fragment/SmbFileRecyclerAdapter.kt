@@ -1,9 +1,11 @@
 package vip.smartfamily.vfs.ui.smb_file.fragment
 
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.hierynomus.msdtyp.AccessMask
 import com.hierynomus.msfscc.FileAttributes
@@ -146,10 +148,12 @@ abstract class SmbFileRecyclerAdapter(
 
                             loadPath?.let { loadFilePath ->
                                 val loadFile = File(loadFilePath)
-                                val url = loadFile
                                 if (loadFile.isDirectory) {
                                     runBlocking {
                                         GlobalScope.launch(Dispatchers.IO) {
+                                            withContext(Dispatchers.Main) {
+                                                Toast.makeText(context, "开始下载", Toast.LENGTH_SHORT).show()
+                                            }
                                             var fos: FileOutputStream? = null
                                             try {
                                                 val file = diskShare.openFile(
@@ -161,20 +165,20 @@ abstract class SmbFileRecyclerAdapter(
                                                         HashSet(listOf(SMB2CreateOptions.FILE_NON_DIRECTORY_FILE)))
 
                                                 fos = FileOutputStream(File(loadFile, fileName))
-                                                file.read(fos)
-                                                /*val buffer = ByteArray(1024)
-
-                                                var len:Int
-                                                do {
-                                                    len = file.read(fos)
-                                                    if (len != -1) {
-                                                        fos.write(buffer, 0, len)
-                                                    }
-                                                } while (len != -1)*/
+                                                file.read(fos) { numBytes, totalBytes ->
+                                                    // 显示下载进度
+                                                    Log.e("download","$numBytes/$totalBytes")
+                                                }
 
                                                 file.close()
+                                                withContext(Dispatchers.Main) {
+                                                    Toast.makeText(context, "下载完成", Toast.LENGTH_SHORT).show()
+                                                }
                                             } catch (e: Exception) {
                                                 e.printStackTrace()
+                                                withContext(Dispatchers.Main) {
+                                                    Toast.makeText(context, "下载错误", Toast.LENGTH_SHORT).show()
+                                                }
                                             } finally {
                                                 fos?.let { output ->
                                                     try {
@@ -195,6 +199,7 @@ abstract class SmbFileRecyclerAdapter(
                                     }
                                 }
                             }
+                            dialogFileChoice?.dismiss()
                         }
                     }
                     dialogFileChoice?.show()
