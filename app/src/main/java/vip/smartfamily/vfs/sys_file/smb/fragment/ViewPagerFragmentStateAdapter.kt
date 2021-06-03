@@ -1,4 +1,4 @@
-package vip.smartfamily.vfs.ui.smb_file.fragment
+package vip.smartfamily.vfs.sys_file.smb.fragment
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

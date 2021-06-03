@@ -1,4 +1,4 @@
-package vip.smartfamily.vfs.ui.smb_file.my_view
+package vip.smartfamily.vfs.sys_file.smb.ui.my_view
 
 import android.app.Dialog
 import android.content.Context
@@ -24,7 +24,7 @@ import vip.smartfamily.vfs.data.smb.SmbFileTree
 import vip.smartfamily.vfs.db.entity.SmbConInfo
 import vip.smartfamily.vfs.db.repository.SmbConRepository
 import vip.smartfamily.vfs.entity.LocalFolder
-import vip.smartfamily.vfs.ui.smb_file.adapter.LocalFolderRecyclerAdapter
+import vip.smartfamily.vfs.sys_file.smb.adapter.LocalFolderRecyclerAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList

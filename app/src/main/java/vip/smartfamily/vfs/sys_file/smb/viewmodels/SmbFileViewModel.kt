@@ -1,4 +1,4 @@
-package vip.smartfamily.vfs.viewmodels
+package vip.smartfamily.vfs.sys_file.smb.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

@@ -1,4 +1,4 @@
-package vip.smartfamily.vfs.ui.smb_file.adapter
+package vip.smartfamily.vfs.sys_file.smb.adapter
 
 import android.view.LayoutInflater
 import android.view.View

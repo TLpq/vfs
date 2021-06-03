@@ -1,4 +1,4 @@
-package vip.smartfamily.vfs.ui.smb_file
+package vip.smartfamily.vfs.sys_file.smb.ui
 
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -27,10 +27,10 @@ import vip.smartfamily.vfs.app_executors.AppExecutors
 import vip.smartfamily.vfs.data.smb.SmbFileTree
 import vip.smartfamily.vfs.db.entity.SmbConInfo
 import vip.smartfamily.vfs.db.repository.SmbConRepository
-import vip.smartfamily.vfs.ui.smb_file.fragment.SmbConListFragment
-import vip.smartfamily.vfs.ui.smb_file.fragment.SmbFileListFragment
-import vip.smartfamily.vfs.ui.smb_file.fragment.ViewPagerFragmentStateAdapter
-import vip.smartfamily.vfs.ui.smb_file.fragment.inter.TopClickListener
+import vip.smartfamily.vfs.sys_file.smb.fragment.SmbConListFragment
+import vip.smartfamily.vfs.sys_file.smb.fragment.SmbFileListFragment
+import vip.smartfamily.vfs.sys_file.smb.fragment.ViewPagerFragmentStateAdapter
+import vip.smartfamily.vfs.sys_file.smb.fragment.inter.TopClickListener
 
 class SmbFileActivity : AppCompatActivity(), TopClickListener {
 

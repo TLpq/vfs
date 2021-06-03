@@ -1,4 +1,4 @@
-package vip.smartfamily.vfs.ui.smb_file.my_view
+package vip.smartfamily.vfs.sys_file.smb.ui.my_view
 
 import android.app.Dialog
 import android.content.Context

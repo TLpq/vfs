@@ -1,4 +1,4 @@
-package vip.smartfamily.vfs.ui.smb_file
+package vip.smartfamily.vfs.sys_file.smb.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,8 +15,8 @@ import vip.smartfamily.vfs.R
 import vip.smartfamily.vfs.data.smb.SmbFileInfo
 import vip.smartfamily.vfs.data.smb.SmbFileTree
 import vip.smartfamily.vfs.db.entity.SmbConInfo
-import vip.smartfamily.vfs.ui.smb_file.fragment.inter.TopClickListener
-import vip.smartfamily.vfs.ui.smb_file.my_view.DialogFileChoice
+import vip.smartfamily.vfs.sys_file.smb.fragment.inter.TopClickListener
+import vip.smartfamily.vfs.sys_file.smb.ui.my_view.DialogFileChoice
 
 /**
  * SMB连接列表适配器
@@ -27,6 +27,8 @@ class FolderRecyclerAdapter(
 ) : RecyclerView.Adapter<FolderViewHolder>() {
 
     private val smbFileList = ArrayList<SmbFileInfo>()
+
+    private val smbConnectList = ArrayList<DiskShare>()
 
     init {
         for (folder in folderList) {
@@ -45,40 +47,45 @@ class FolderRecyclerAdapter(
         return FolderViewHolder(folderView)
     }
 
-    var index = 0;
-
     override fun onBindViewHolder(holder: FolderViewHolder, position: Int) {
         val smbFileInfo = smbFileList[position]
-        Log.e("onBindViewHolder", "调用onBindViewHolder：${++index}")
         holder.run {
             nameView.text = smbFileInfo.smbConInfo.name
             runBlocking {
                 GlobalScope.launch() {
                     try {
+                        // 连接SMB
                         val client = SMBClient()
-                        smbFileInfo.smbConInfo.run {
-                            val connection = client.connect(ip)
-                            val ac = AuthenticationContext(user, paw.toCharArray(), ip)
-                            val session = connection.authenticate(ac)
-                            val share = session.connectShare(path) as DiskShare
-                            smbFileInfo.diskShare = share
-                            smbFileInfo.fileTrees?.clear()
-                            for (fileInfo in share.list("", "*")) {
-                                if ("." != fileInfo.fileName && ".." != fileInfo.fileName) {
-                                    smbFileInfo.fileTrees
-                                            ?: synchronized(FolderRecyclerAdapter::class) {
-                                                smbFileInfo.fileTrees = ArrayList()
-                                            }
-                                    val smbFileTree = SmbFileTree("", fileInfo, null)
-                                    smbFileInfo.fileTrees?.add(smbFileTree)
-                                }
-                            }
-                        }
+                        val connection = client.connect(smbFileInfo.smbConInfo.ip)
+                        val ac = AuthenticationContext(smbFileInfo.smbConInfo.user, smbFileInfo.smbConInfo.paw.toCharArray(), smbFileInfo.smbConInfo.ip)
+                        val session = connection.authenticate(ac)
+                        val share = session.connectShare(smbFileInfo.smbConInfo.path) as DiskShare
+                        smbFileInfo.diskShare = share
+                        smbConnectList.add(share)
 
                         withContext(Dispatchers.Main) {
                             statusView.setBackgroundResource(R.drawable.ic_folder_status_true)
                             iconView.setOnClickListener {
-                                topClickListener.onClickDisk(smbFileInfo.diskShare!!, smbFileInfo.fileTrees!!)
+                                runBlocking {
+                                    val job = GlobalScope.launch {
+                                        smbFileInfo.smbConInfo.run {
+                                            smbFileInfo.fileTrees?.clear()
+                                            for (fileInfo in share.list("", "*")) {
+                                                if ("." != fileInfo.fileName && ".." != fileInfo.fileName) {
+                                                    smbFileInfo.fileTrees
+                                                            ?: synchronized(FolderRecyclerAdapter::class) {
+                                                                smbFileInfo.fileTrees = ArrayList()
+                                                            }
+                                                    val smbFileTree = SmbFileTree("", fileInfo, null)
+                                                    smbFileInfo.fileTrees?.add(smbFileTree)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    job.join()
+                                    // 显示下一级
+                                    topClickListener.onClickDisk(smbFileInfo.diskShare!!, smbFileInfo.fileTrees!!)
+                                }
                             }
                         }
                     } catch (e: Exception) {
@@ -91,7 +98,7 @@ class FolderRecyclerAdapter(
             detailsView.visibility = View.VISIBLE
             detailsView.setOnClickListener {
                 val dialogFileChoice = object : DialogFileChoice(itemView.context, DialogFileChoice.VFS_DISK, smbFileInfo) {
-                    override fun onCheckPermission(){
+                    override fun onCheckPermission() {
 
                     }
 
@@ -118,6 +125,15 @@ class FolderRecyclerAdapter(
         } catch (e: Exception) {
         }
         notifyDataSetChanged()
+    }
+
+    fun clear() {
+        for (connectInfo in smbConnectList){
+            try {
+                connectInfo.close()
+            } catch (e: Exception) {
+            }
+        }
     }
 }
 

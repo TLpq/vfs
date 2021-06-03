@@ -1,4 +1,4 @@
-package vip.smartfamily.vfs.ui.smb_file.fragment
+package vip.smartfamily.vfs.sys_file.smb.fragment
 
 import android.graphics.BitmapFactory
 import android.util.Log
@@ -17,9 +17,9 @@ import com.hierynomus.smbj.share.DiskShare
 import kotlinx.coroutines.*
 import vip.smartfamily.vfs.R
 import vip.smartfamily.vfs.data.smb.SmbFileTree
-import vip.smartfamily.vfs.ui.smb_file.FolderViewHolder
-import vip.smartfamily.vfs.ui.smb_file.fragment.inter.TopClickListener
-import vip.smartfamily.vfs.ui.smb_file.my_view.DialogFileChoice
+import vip.smartfamily.vfs.sys_file.smb.adapter.FolderViewHolder
+import vip.smartfamily.vfs.sys_file.smb.fragment.inter.TopClickListener
+import vip.smartfamily.vfs.sys_file.smb.ui.my_view.DialogFileChoice
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
@@ -76,7 +76,7 @@ abstract class SmbFileRecyclerAdapter(
                                         topClickListener.onClickDisk(diskShare, fileTrees)
                                     }
 
-
+                                    directory.close()
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                 }

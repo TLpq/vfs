@@ -1,4 +1,4 @@
-package vip.smartfamily.vfs.ui.smb_file.fragment
+package vip.smartfamily.vfs.sys_file.smb.fragment
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.hierynomus.smbj.share.DiskShare
 import vip.smartfamily.vfs.R
 import vip.smartfamily.vfs.data.smb.SmbFileTree
-import vip.smartfamily.vfs.ui.smb_file.fragment.inter.TopClickListener
+import vip.smartfamily.vfs.sys_file.smb.fragment.inter.TopClickListener
 
 /**
  * 非磁盘文件处理模块
@@ -48,18 +48,6 @@ class SmbFileListFragment(
         recyclerView.layoutManager = staggeredGridLayoutManager
         smbFileListFragment = object : SmbFileRecyclerAdapter(diskShare, smbFileInfoList, topClickListener) {
             override fun onWriteStorage() {
-                /*val path = Environment.getDownloadCacheDirectory()
-                val CREATE_FILE = 1
-                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-                    addCategory(Intent.CATEGORY_OPENABLE)
-                    type = "application/pdf"
-                    putExtra(Intent.EXTRA_TITLE, "invoice.pdf")
-
-                    // Optionally, specify a URI for the directory that should be opened in
-                    // the system file picker before your app creates the document.
-                    putExtra(DocumentsContract.EXTRA_INITIAL_URI, path.toURI())
-                }
-                startActivityForResult(intent, CREATE_FILE)*/
                 permissionDetect()
             }
         }

@@ -1,4 +1,4 @@
-package vip.smartfamily.vfs
+package vip.smartfamily.vfs.sys_file.smb
 
 import com.hierynomus.msdtyp.AccessMask
 import com.hierynomus.msfscc.FileAttributes

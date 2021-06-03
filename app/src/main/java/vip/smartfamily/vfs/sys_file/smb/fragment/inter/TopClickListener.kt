@@ -1,4 +1,4 @@
-package vip.smartfamily.vfs.ui.smb_file.fragment.inter
+package vip.smartfamily.vfs.sys_file.smb.fragment.inter
 
 import com.hierynomus.smbj.share.DiskShare
 import vip.smartfamily.vfs.data.smb.SmbFileTree
